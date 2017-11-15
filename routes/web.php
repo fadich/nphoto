@@ -12,3 +12,8 @@
 */
 
 Route::get("/", ["uses" => "HomeController@indexAction", "as" => "homepage"]);
+
+/* Group '/admin' */
+Route::get("/admin", ["uses" => "Admin\IndexController@indexAction", "as" => "admin.index"]);
+
+Route::post("/admin/photos/create", ["uses" => "Admin\PhotosController@createAction", "as" => "admin.photos.create"]);
