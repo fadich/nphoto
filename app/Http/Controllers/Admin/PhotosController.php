@@ -2,14 +2,40 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\FileAdapter;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class PhotosController extends Controller
 {
-    public function createAction(Request $request)
+    const UPDATED_PHOTOS_DIR = 'photos/originals';
+
+    /**
+     * @var \App\Services\FileAdapter
+     */
+    protected $fileAdapter;
+
+    public function __construct(
+        Request $request,
+        FileAdapter $fileAdapter
+    ) {
+        parent::__construct($request);
+
+        $this->fileAdapter = $fileAdapter;
+    }
+
+    public function createAction()
     {
-        $files = $request->files;
-        var_dump($request->all(), $files); die;
+        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile[] $files */
+        $files = $this->request->files->get('files');
+        $saved = $this->fileAdapter->uploadMulti($files, static::UPDATED_PHOTOS_DIR, true);
+
+        if ($saved) {
+            session()->flash('message', 'Files has been saved');
+        } else {
+            session()->flash('message', $this->fileAdapter->lastError());
+        }
+
+        return $this->redirect(route('admin.index'));
     }
 }

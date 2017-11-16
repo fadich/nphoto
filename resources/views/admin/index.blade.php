@@ -1,4 +1,10 @@
-<form action="/admin/photos/create" method="post">
+@if (session('message'))
+    <div class="col-md-12">
+        <div class="alert alert-success" role="alert">{{ session('message') }}</div>
+    </div>
+@endif
+
+<form action="/admin/photos/create" method="post" enctype="multipart/form-data">
     {{ csrf_field() }}
 
     <div class="form-group">
@@ -8,7 +14,7 @@
 
     <div class="form-group">
         <label for="upload">File</label>
-        <input id="upload" type="file" class="form-control" name="file">
+        <input id="upload" type="file" class="form-control" name="files[]" multiple>
     </div>
 
     <button type="submit" class="btn btn-default">Submit</button>
