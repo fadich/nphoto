@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 
 class IndexController extends Controller
 {
+    protected $layout = 'layout.admin';
+
     public function indexAction()
     {
-        return view('admin.index');
+        return $this->getLayout()->nest('content', 'admin.index');
     }
 }
