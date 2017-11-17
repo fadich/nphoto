@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Services\FileAdapter;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class PhotosController extends Controller
 {
@@ -26,6 +27,14 @@ class PhotosController extends Controller
 
     public function createAction()
     {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = Validator::make($this->request->all(), [
+            'files' => 'required|array',
+            'files.*' => 'required|image',
+        ]);
+
+        $validator->validate();
+
         /** @var \Symfony\Component\HttpFoundation\File\UploadedFile[] $files */
         $files = $this->request->files->get('files') ?: [];
         $results = $this->fileAdapter->uploadMulti($files, static::UPDATED_PHOTOS_DIR);
@@ -34,6 +43,8 @@ class PhotosController extends Controller
 
         foreach ($results as $key => $result) {
             if ($result) {
+                // Replace for frontend...
+                $results[$key] = str_replace('public', 'storage', $result);
                 $success++;
                 continue;
             }
@@ -48,7 +59,7 @@ class PhotosController extends Controller
                 'success' => false,
                 'files' => $results,
                 'message' => 'Files has not been saved',
-            ], 400);
+            ], 503);
         } elseif (count($results) === $success) {
             // Success of each files...
             return $this->json([

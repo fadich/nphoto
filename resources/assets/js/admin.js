@@ -26,6 +26,14 @@
                 processData: false,
                 success: function (res) {
                     console.log(res)
+                    for (let file of res.files) {
+                        if (file) {
+                            let img = document.createElement('img')
+
+                            img.src = '/' + file
+                            document.body.appendChild(img)
+                        }
+                    }
                 },
                 error: function (error) {
                     console.error(error.status + ': ' + error.statusText)
