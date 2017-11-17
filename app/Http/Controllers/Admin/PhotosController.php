@@ -28,12 +28,30 @@ class PhotosController extends Controller
     {
         /** @var \Symfony\Component\HttpFoundation\File\UploadedFile[] $files */
         $files = $this->request->files->get('files');
-        $saved = $this->fileAdapter->uploadMulti($files, static::UPDATED_PHOTOS_DIR, true);
+        $results = $this->fileAdapter->uploadMulti($files, static::UPDATED_PHOTOS_DIR);
+        $success = 0;
+        $errors = [];
 
-        if ($saved) {
-            session()->flash('message', 'Files has been saved');
+        foreach ($results as $key => $result) {
+            if ($result) {
+                $success++;
+                continue;
+            }
+
+            $file = $files[$key];
+            $errors[] = $file->getClientOriginalName();
+        }
+
+        if ($success === 0) {
+            session()->flash('error', 'Files has not been saved');
+        } elseif (count($results) === $success) {
+            session()->flash('success', 'Files has been saved successfully');
         } else {
-            session()->flash('message', $this->fileAdapter->lastError());
+            $message = 'Files has not been saved: <ul>' . implode('', array_map(function ($name) {
+                return '<li>' . $name . '</li>';
+            }, $errors)) . '</ul>';
+
+            session()->flash('warning', $message);
         }
 
         return $this->redirect(route('admin.index'));

@@ -1,8 +1,4 @@
-@if (session('message'))
-    <div class="col-md-12">
-        <div class="alert alert-success" role="alert">{{ session('message') }}</div>
-    </div>
-@endif
+@include('components.alert')
 
 <form action="/admin/photos/create" method="post" enctype="multipart/form-data">
     {{ csrf_field() }}
