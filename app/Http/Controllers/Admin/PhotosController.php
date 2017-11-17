@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 
 class PhotosController extends Controller
 {
-    const UPDATED_PHOTOS_DIR = 'photos/originals';
+    const UPDATED_PHOTOS_DIR = 'public/photos/originals';
 
     /**
      * @var \App\Services\FileAdapter
@@ -27,7 +27,7 @@ class PhotosController extends Controller
     public function createAction()
     {
         /** @var \Symfony\Component\HttpFoundation\File\UploadedFile[] $files */
-        $files = $this->request->files->get('files');
+        $files = $this->request->files->get('files') ?: [];
         $results = $this->fileAdapter->uploadMulti($files, static::UPDATED_PHOTOS_DIR);
         $success = 0;
         $errors = [];
@@ -43,17 +43,29 @@ class PhotosController extends Controller
         }
 
         if ($success === 0) {
-            session()->flash('error', 'Files has not been saved');
+            // Error of each upload...
+            return $this->json([
+                'success' => false,
+                'files' => $results,
+                'message' => 'Files has not been saved',
+            ], 400);
         } elseif (count($results) === $success) {
-            session()->flash('success', 'Files has been saved successfully');
-        } else {
-            $message = 'Files has not been saved: <ul>' . implode('', array_map(function ($name) {
-                return '<li>' . $name . '</li>';
-            }, $errors)) . '</ul>';
-
-            session()->flash('warning', $message);
+            // Success of each files...
+            return $this->json([
+                'success' => true,
+                'files' => $results,
+                'message' => 'Files has been saved successfully',
+            ]);
         }
+        // Errors uploading of some files...
+        $message = 'Files has not been saved: <ul>' . implode('', array_map(function ($name) {
+            return '<li>' . $name . '</li>';
+        }, $errors)) . '</ul>';
 
-        return $this->redirect(route('admin.index'));
+        return $this->json([
+            'success' => false,
+            'files' => $results,
+            'message' => $message,
+        ], 503);
     }
 }
