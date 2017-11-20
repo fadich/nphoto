@@ -63,11 +63,14 @@ class PhotosController extends Controller
                 $photo = $this->photoRepository->create([
                     'full_path' => $path,
                     'client_filename' => $file->getClientOriginalName(),
-                    'original_path' => $this->fileAdapter->adapter->path($result),
+                    'original_path' => $result,
                 ]);
             } catch (\Exception $e) {
                 $errors[] = $file->getClientOriginalName();
                 $this->fileAdapter->delete($result);
+                if (app('env') === 'local') {
+                    throw $e;
+                }
                 continue;
             }
 

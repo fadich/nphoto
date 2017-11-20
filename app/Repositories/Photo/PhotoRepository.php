@@ -23,6 +23,7 @@ class PhotoRepository
             $path = $attributes['full_path'];
             $attributes['filename'] = substr($path, strrpos($path, '-') + 1);
             $attributes['base_path'] = base_path($path);
+            unset($attributes['full_path']);
         }
 
         $this->model->setRawAttributes($attributes);
