@@ -4,9 +4,13 @@
     let $list = $('.photo-list')
     let $form = $('#upload-form');
     let $fileInput = $form.find('input#upload')
+    let page = 1
+    let perPage = 12
+    let nextPage = true
+    let photos = []
 
     $(document).ready(function () {
-        getPhotos()
+        paginatePhotos()
     })
 
     $form.change(function (ev) {
@@ -90,21 +94,58 @@
         `;
     }
 
-    function getPhotos() {
-        $.ajax({
-            type: 'GET',
-            url: '/admin/photos/list',
-            success: function (res) {
-                for (let photo of res.photos) {
-                    if (photo) {
-                        photoForm(photo)
-                    }
+    function displayPhotos(photos) {
+        return new Promise(function (resolve, reject) {
+            for (let photo of photos) {
+                if (photo) {
+                    photoForm(photo)
                 }
-            },
-            error: function (error) {
-                console.error(error.status + ': ' + error.statusText)
             }
+
+            resolve()
         })
+    }
+
+    function getPhotos(parameters) {
+        return $.when(
+            $.ajax({
+                type: 'GET',
+                url: '/admin/photos/list',
+                data: parameters,
+                async: true,
+                cache: false,
+            })
+        )
+    }
+
+    function paginatePhotos() {
+        displayPhotos(photos)
+            .then(() => {
+                return getPhotos({
+                    page: page++,
+                    perPage: perPage
+                })
+            })
+            .then ((res) => {
+                photos = res.photos
+                if (photos.length < perPage) {
+                    perPage = false
+                }
+            })
+            .then(() => {
+                displayPhotos(photos)
+                if (nextPage) {
+                    $list.append(`
+                        <div><button class="btn">-- Load more --</button></div>
+                    `)
+                }
+            })
+            .then(() => {
+                return getPhotos({
+                    page: page++,
+                    perPage: perPage
+                })
+            })
     }
 
 })()

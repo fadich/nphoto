@@ -17,9 +17,11 @@ class PhotoRepository
         $this->model = new Photo();
     }
 
-    public function get()
+    public function get(int $page = 1, int $perPage = 12)
     {
-        return $this->model->get();
+        $offset = ($page * $perPage) - 1;
+
+        return $this->model->limit($perPage)->offset($offset)->get();
     }
 
     public function create(array $attributes)

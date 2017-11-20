@@ -35,8 +35,18 @@ class PhotosController extends Controller
 
     public function listAction()
     {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = Validator::make($this->request->all(), [
+            'page' => 'integer|min:1',
+            'perPage' => 'integer|min:3|max:24',
+        ]);
+        $validator->validate();
+
+        $page = $this->request->get('page') ?: 1;
+        $perPage = $this->request->get('perPage') ?: 12;
+
         return $this->json([
-            'photos' => $this->photoRepository->get()
+            'photos' => $this->photoRepository->get($page, $perPage)
         ]);
     }
 
