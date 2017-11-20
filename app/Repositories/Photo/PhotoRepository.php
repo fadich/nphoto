@@ -19,14 +19,17 @@ class PhotoRepository
 
     public function create(array $attributes)
     {
-        if ($attributes['full_path']) {
-            $path = $attributes['full_path'];
-            $attributes['filename'] = substr($path, strrpos($path, '-') + 1);
-            $attributes['base_path'] = base_path($path);
+        $fullPath = false;
+        if (isset($attributes['full_path'])) {
+            $fullPath = $attributes['full_path'];
             unset($attributes['full_path']);
         }
 
         $this->model->setRawAttributes($attributes);
+
+        if ($fullPath) {
+            $this->model->setFullPath($fullPath);
+        }
 
         return $this->model->save() ? $this->model : false;
     }
