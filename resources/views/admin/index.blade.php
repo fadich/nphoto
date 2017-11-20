@@ -4,6 +4,6 @@
     {{ csrf_field() }}
     <div class="form-group">
         <label for="upload">File</label>
-        <input id="upload" type="file" class="form-control" name="files[]" multiple>
+        <input id="upload" type="file" class="form-control" name="photos[]" multiple>
     </div>
 </form>

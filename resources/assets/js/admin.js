@@ -15,7 +15,7 @@
         let files = $fileInput.hasOwnProperty('0') ? $fileInput[0].files : []
 
         for (let file of files) {
-            formData.set('files[]', file)
+            formData.set('photos[]', file)
 
             $.ajax({
                 type: 'POST',
@@ -25,7 +25,6 @@
                 contentType: false,
                 processData: false,
                 success: function (res) {
-                    console.log(res)
                     for (let file of res.files) {
                         if (file) {
                             let img = document.createElement('img')

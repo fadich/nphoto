@@ -9,5 +9,9 @@ class Photo extends Model
     protected $fillable = [
         'title',
         'description',
+        'base_path',
+        'filename',
+        'client_filename',
+        'original_path',
     ];
 }

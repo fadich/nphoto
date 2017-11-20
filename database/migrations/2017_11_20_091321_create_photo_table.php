@@ -17,9 +17,10 @@ class CreatePhotoTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->text('description');
-            $table->string('path');
-            $table->string('name');
-            $table->string('original_name');
+            $table->string('base_path');
+            $table->string('filename');
+            $table->string('client_filename');
+            $table->string('original_path');
             $table->timestamps();
         });
     }
