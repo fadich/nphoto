@@ -42,6 +42,7 @@ class Photo extends Model
         }
 
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
             'fullPath' => $this->fullPath,

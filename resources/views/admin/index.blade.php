@@ -7,3 +7,5 @@
         <input id="upload" type="file" class="form-control" name="photos[]" multiple>
     </div>
 </form>
+
+<div class="photo-list row"></div>

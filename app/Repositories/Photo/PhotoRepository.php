@@ -17,6 +17,11 @@ class PhotoRepository
         $this->model = new Photo();
     }
 
+    public function get()
+    {
+        return $this->model->get();
+    }
+
     public function create(array $attributes)
     {
         $fullPath = false;

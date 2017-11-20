@@ -33,6 +33,13 @@ class PhotosController extends Controller
         $this->photoRepository = $photoRepository;
     }
 
+    public function listAction()
+    {
+        return $this->json([
+            'photos' => $this->photoRepository->get()
+        ]);
+    }
+
     public function createAction()
     {
         /** @var \Illuminate\Validation\Validator $validator */
