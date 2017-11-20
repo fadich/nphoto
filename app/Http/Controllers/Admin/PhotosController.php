@@ -44,7 +44,9 @@ class PhotosController extends Controller
         foreach ($results as $key => $result) {
             if ($result) {
                 // Replace for frontend...
-                $results[$key] = str_replace('public', 'storage', $result);
+                $path = str_replace('public', 'storage', $result);
+                $results[$key] = $path;
+
                 $success++;
                 continue;
             }
