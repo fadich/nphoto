@@ -17,9 +17,19 @@
     <title>Admin</title>
 </head>
 <body>
-<div class="wrapper">
-    <div class="content">
-        {!! $content !!}
+
+<nav class="navbar">
+    <div class="container-fluid">
+    </div>
+</nav>
+
+<div id="wrap" class="wrapper">
+    <div id="main" class="container">
+        <div class="wrapper">
+            <div class="content">
+                {!! $content !!}
+            </div>
+        </div>
     </div>
 </div>
 
