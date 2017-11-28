@@ -19,7 +19,7 @@ class PhotoRepository
 
     public function get(int $page = 1, int $perPage = 12)
     {
-        $offset = ($page * $perPage) - 1;
+        $offset = ($page - 1) * $perPage;
 
         return $this->model->limit($perPage)->offset($offset)->get();
     }

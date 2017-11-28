@@ -129,7 +129,7 @@
             .then ((res) => {
                 photos = res.photos
                 if (photos.length < perPage) {
-                    perPage = false
+                    nextPage = false
                 }
             })
             .then(() => {
