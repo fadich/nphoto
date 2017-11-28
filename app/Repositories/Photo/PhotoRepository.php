@@ -21,7 +21,7 @@ class PhotoRepository
     {
         $offset = ($page - 1) * $perPage;
 
-        return $this->model->limit($perPage)->offset($offset)->get();
+        return $this->model->orderBy('id', 'DESC')->limit($perPage)->offset($offset)->get();
     }
 
     public function create(array $attributes)

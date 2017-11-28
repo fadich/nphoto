@@ -17,5 +17,19 @@
         max-height: 100%;
       }
     }
+
+    textarea {
+      resize: none;
+    }
+  }
+}
+
+.load-more-wrap {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+
+  button {
+    width: 95%;
   }
 }

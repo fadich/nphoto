@@ -1,23 +1,37 @@
 ;(function () {
     "use strict";
 
+    const PER_PAGE = 6
+
     let $list = $('.photo-list')
-    let $form = $('#upload-form');
-    let $fileInput = $form.find('input#upload')
+    let $uploadForm = $('#upload-form')
+    let $itemForm = $('.photo-list-item-form')
+    let $fileInput = $uploadForm.find('input#upload')
     let page = 1
-    let perPage = 12
     let nextPage = true
     let photos = []
 
     $(document).ready(function () {
-        paginatePhotos()
+        getPhotos({
+            page: page++,
+            perPage: PER_PAGE
+        })
+        .then((res) => {
+            photos = res.photos
+            if (photos.length < PER_PAGE) {
+                nextPage = false
+            }
+        })
+        .then(function () {
+            paginatePhotos()
+        })
     })
 
-    $form.change(function (ev) {
-        $form.submit()
+    $($uploadForm, $itemForm).change(function (ev) {
+        $(this).submit()
     })
 
-    $form.submit(function (ev) {
+    $uploadForm.submit(function (ev) {
         ev.preventDefault()
 
         let formData = new FormData(this);
@@ -28,7 +42,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: $form.attr('action'),
+                url: $uploadForm.attr('action'),
                 data: formData,
                 cache:false,
                 contentType: false,
@@ -47,9 +61,17 @@
         }
     })
 
+    $(document).on('scroll', function () {
+        if (isNearBottom()) {
+            loadMore()
+        }
+    })
+
+    $(document).on('click', '#load-more', loadMore)
+
     /*********** HELPERS ***********/
     function photoForm(photo) {
-        $list.prepend(photoItemTemplate(photo))
+        $list.append(photoItemTemplate(photo))
     }
 
     function photoItemTemplate(photo) {
@@ -60,7 +82,7 @@
                         <span class="delete">X</span>
                     </a>
                 </div>
-                <form action="/admin/photos/update/` + photo.id + `" method="post">
+                <form action="/admin/photos/update/` + photo.id + `" method="post" class="photo-list-item-form">
                     <div class="photo-list-item-image">
                         <img src="/` + photo.fullPath + `">
                     </div>
@@ -89,7 +111,7 @@
 
         return `
             <div class="form-group">
-                <textarea class="form-control" name="` + name + `" id="" cols="30" rows="10" ` + attributes + `>` + value + `</textarea>
+                <textarea class="form-control" name="` + name + `" id="" cols="30" rows="5" ` + attributes + `>` + value + `</textarea>
             </div>
         `;
     }
@@ -119,33 +141,45 @@
     }
 
     function paginatePhotos() {
+
         displayPhotos(photos)
-            .then(() => {
-                return getPhotos({
+            .then(function () {
+                getPhotos({
                     page: page++,
-                    perPage: perPage
+                    perPage: PER_PAGE
                 })
-            })
-            .then ((res) => {
-                photos = res.photos
-                if (photos.length < perPage) {
-                    nextPage = false
-                }
+                    .then((res) => {
+                        photos = res.photos
+                        if (photos.length < PER_PAGE) {
+                            nextPage = false
+                        }
+                    })
             })
             .then(() => {
-                displayPhotos(photos)
+                photos = []
                 if (nextPage) {
-                    $list.append(`
-                        <div><button class="btn">-- Load more --</button></div>
+                    $list.parent().append(`
+                        <div class="load-more-wrap">
+                            <button id="load-more" class="btn btn-default">
+                            -- Load more --
+                            </button>
+                        </div>
                     `)
                 }
             })
-            .then(() => {
-                return getPhotos({
-                    page: page++,
-                    perPage: perPage
-                })
-            })
+    }
+
+    function loadMore() {
+        $('#load-more').remove()
+        paginatePhotos()
+    }
+
+    function isNearBottom() {
+        let height = $(document).height()
+        let scrolled = $(document).scrollTop() + $(window).height()
+        let trigger = height - height / 100 * 10
+
+        return scrolled >= trigger;
     }
 
 })()
