@@ -1,6 +1,14 @@
 ;(function () {
     "use strict";
 
+
+
+})()
+
+
+;(function () {
+    "use strict";
+
     let $list = $('.photo-list')
     let $form = $('#upload-form');
     let $fileInput = $form.find('input#upload')
@@ -107,4 +115,5 @@
         })
     }
 
-})()
+})();
+
