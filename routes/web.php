@@ -17,4 +17,13 @@ Route::get("/", ["uses" => "HomeController@indexAction", "as" => "homepage"]);
 Route::get("/admin", ["uses" => "Admin\IndexController@indexAction", "as" => "admin.index"]);
 
 Route::get("/admin/photos/list", ["uses" => "Admin\PhotosController@listAction", "as" => "admin.photos.list"]);
-Route::post("/admin/photos/create", ["uses" => "Admin\PhotosController@createAction", "as" => "admin.photos.create", "before" => "csrf"]);
+Route::post("/admin/photos/create", [
+    "uses"   => "Admin\PhotosController@createAction",
+    "as"     => "admin.photos.create",
+    "before" => "csrf",
+]);
+Route::post("/admin/photos/{id}/update", [
+    "uses"   => "Admin\PhotosController@updateAction",
+    "as"     => "admin.photos.update",
+//    "before" => "csrf",
+]);

@@ -1,7 +1,7 @@
 ;(function () {
     "use strict";
 
-    const PER_PAGE = 6
+    const PER_PAGE = 8
 
     let $list = $('.photo-list')
     let $uploadForm = $('#upload-form')
@@ -50,7 +50,7 @@
                 success: function (res) {
                     for (let photo of res.photos) {
                         if (photo) {
-                            photoForm(photo)
+                            $list.prepend(photoItemTemplate(photo))
                         }
                     }
                 },
@@ -69,6 +69,37 @@
 
     $(document).on('click', '#load-more', loadMore)
 
+    $(document).on('change', '.photo-list-item-form', function () {
+        $(this).submit()
+    })
+
+    $(document).on('submit', '.photo-list-item-form', function (ev) {
+        let $this = $(this)
+        let data = {}
+        $.each($this.serializeArray(), function(_, kv) {
+            data[kv.name] = kv.value;
+        })
+        let url = $this.attr('action')
+
+        data.published = +!!data.published
+        ev.preventDefault()
+
+        $.ajax({
+            url: url,
+            data: data,
+            method: 'post',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (res) {
+                console.log(res)
+            },
+            error: function (err) {
+                console.error(err)
+            }
+        })
+    })
+
     /*********** HELPERS ***********/
     function photoForm(photo) {
         $list.append(photoItemTemplate(photo))
@@ -76,19 +107,20 @@
 
     function photoItemTemplate(photo) {
         return `
-            <div class="photo-list-item col-md-4">
+            <div class="photo-list-item col-md-3">
                 <div class="actions">
                     <a class="pull-right">
                         <span class="delete">X</span>
                     </a>
                 </div>
-                <form action="/admin/photos/update/` + photo.id + `" method="post" class="photo-list-item-form">
+                <form action="/admin/photos/` + photo.id + `/update" method="post" class="photo-list-item-form">
                     <div class="photo-list-item-image">
                         <img src="/` + photo.fullPath + `">
                     </div>
                     ` + textFieldTemplate('clientFilename', photo.clientFilename, 'disabled') + `
                     ` + textFieldTemplate('title', photo.title, 'placeholder="Photo title"') + `
                     ` + textAreaTemplate('description', photo.description, 'placeholder="Description"') + `
+                    ` + checkBoxTemplate('published', photo.published, 'Published') + `
                 </form>
             </div>
         `;
@@ -112,6 +144,20 @@
         return `
             <div class="form-group">
                 <textarea class="form-control" name="` + name + `" id="" cols="30" rows="5" ` + attributes + `>` + value + `</textarea>
+            </div>
+        `;
+    }
+
+    function checkBoxTemplate(name, value, label) {
+        value = value || ''
+        label = label || ''
+
+        return `
+            <div class="form-group">
+                <span><strong>` + label + `</strong></span>
+                <input type="checkbox" 
+                       class="checkbox checkbox--green pull-right" 
+                       name="` + name + `" ` + (+value ? `checked` : ``) + `>
             </div>
         `;
     }
@@ -144,6 +190,10 @@
 
         displayPhotos(photos)
             .then(function () {
+                if (!nextPage) {
+                    return;
+                }
+
                 getPhotos({
                     page: page++,
                     perPage: PER_PAGE
