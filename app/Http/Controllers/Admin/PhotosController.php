@@ -123,4 +123,31 @@ class PhotosController extends Controller
             'message' => $message,
         ], 503);
     }
+
+    public function updateAction(int $id)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = Validator::make($this->request->all(), [
+            'title' => 'string|nullable',
+            'description' => 'string|nullable',
+            'published' => 'integer|min:0|max:1|nullable',
+        ]);
+        $validator->validate();
+
+        $photo = $this->photoRepository->updateOne((int) $id, $this->request->all());
+
+        if (!$photo) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Photos not found',
+            ], 404);
+        }
+
+        return $this->json([
+            'success' => true,
+            'photos' => $photo->toArray(),
+            'message' => 'Photos has been saved successfully',
+        ]);
+    }
+
 }

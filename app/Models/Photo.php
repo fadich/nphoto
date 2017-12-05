@@ -34,6 +34,7 @@ class Photo extends Model
         'filename',
         'client_filename',
         'original_path',
+        'published',
     ];
 
     public function toArray(bool $full = false)
@@ -73,7 +74,7 @@ class Photo extends Model
         /** @var \Illuminate\Support\Carbon $time */
         $time = $this->getAttribute('created_at');
 
-        return $time->getTimestamp();
+        return $time ? $time->getTimestamp() : 0;
     }
 
     public function getUpdatedAt()
@@ -81,7 +82,7 @@ class Photo extends Model
         /** @var \Illuminate\Support\Carbon $time */
         $time = $this->getAttribute('updated_at');
 
-        return $time->getTimestamp();
+        return $time ? $time->getTimestamp() : 0;
     }
 
 }

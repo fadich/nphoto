@@ -50,7 +50,7 @@
                 success: function (res) {
                     for (let photo of res.photos) {
                         if (photo) {
-                            photoForm(photo)
+                            $list.prepend(photoItemTemplate(photo))
                         }
                     }
                 },
@@ -69,6 +69,37 @@
 
     $(document).on('click', '#load-more', loadMore)
 
+    $(document).on('change', '.photo-list-item-form', function () {
+        $(this).submit()
+    })
+
+    $(document).on('submit', '.photo-list-item-form', function (ev) {
+        let $this = $(this)
+        let data = {}
+        $.each($this.serializeArray(), function(_, kv) {
+            data[kv.name] = kv.value;
+        })
+        let url = $this.attr('action')
+
+        data.published = +!!data.published
+        ev.preventDefault()
+
+        $.ajax({
+            url: url,
+            data: data,
+            method: 'post',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (res) {
+                console.log(res)
+            },
+            error: function (err) {
+                console.error(err)
+            }
+        })
+    })
+
     /*********** HELPERS ***********/
     function photoForm(photo) {
         $list.append(photoItemTemplate(photo))
@@ -82,7 +113,7 @@
                         <span class="delete">X</span>
                     </a>
                 </div>
-                <form action="/admin/photos/update/` + photo.id + `" method="post" class="photo-list-item-form">
+                <form action="/admin/photos/` + photo.id + `/update" method="post" class="photo-list-item-form">
                     <div class="photo-list-item-image">
                         <img src="/` + photo.fullPath + `">
                     </div>
@@ -159,6 +190,10 @@
 
         displayPhotos(photos)
             .then(function () {
+                if (!nextPage) {
+                    return;
+                }
+
                 getPhotos({
                     page: page++,
                     perPage: PER_PAGE
