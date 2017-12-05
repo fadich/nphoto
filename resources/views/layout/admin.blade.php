@@ -6,18 +6,32 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
-          crossorigin="anonymous">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/css/admin.css">
 
     <title>Admin</title>
 </head>
 <body>
-<div class="wrapper">
-    <div class="content">
-        {!! $content !!}
+
+<nav class="navbar">
+    <div class="container-fluid">
+    </div>
+</nav>
+
+<div id="wrap" class="wrapper">
+    <div id="main" class="container">
+        <div class="wrapper">
+            <div class="content">
+                {!! $content !!}
+            </div>
+        </div>
     </div>
 </div>
+
+<script src="/js/app.js"></script>
+<script src="/js/admin.js"></script>
+
 </body>
 </html>

@@ -115,4 +115,10 @@ class FileAdapter
     {
         return end($this->errors);
     }
+
+    public function delete(string $path)
+    {
+        return $this->adapter->delete($path);
+    }
+
 }

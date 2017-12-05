@@ -1,17 +1,13 @@
 @include('components.alert')
 
-<form action="/admin/photos/create" method="post" enctype="multipart/form-data">
+<form id="upload-form" action="/admin/photos/create" method="post" enctype="multipart/form-data">
     {{ csrf_field() }}
-
-    <div class="form-group">
-        <label for="title">Title</label>
-        <input id="title" type="text" class="form-control" name="title">
+    <div class="form-group file-upload">
+        <div class="file-upload-wrap">
+            <input id="upload" type="file" name="photos[]" multiple>
+            <span class="glyphicon glyphicon-plus"></span>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="upload">File</label>
-        <input id="upload" type="file" class="form-control" name="files[]" multiple>
-    </div>
-
-    <button type="submit" class="btn btn-default">Submit</button>
 </form>
+
+<div class="photo-list row"></div>
