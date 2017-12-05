@@ -6,8 +6,6 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <script src="/js/app.js"></script>
-
     <link rel="stylesheet" href="/css/app.css">
     <link rel="stylesheet" href="/css/frontend.css">
 
@@ -19,5 +17,7 @@
         {!! $content !!}
     </div>
 </div>
+
+<script src="/js/app.js"></script>
 </body>
 </html>
