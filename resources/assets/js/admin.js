@@ -1,7 +1,7 @@
 ;(function () {
     "use strict";
 
-    const PER_PAGE = 6
+    const PER_PAGE = 8
 
     let $list = $('.photo-list')
     let $uploadForm = $('#upload-form')
@@ -76,7 +76,7 @@
 
     function photoItemTemplate(photo) {
         return `
-            <div class="photo-list-item col-md-4">
+            <div class="photo-list-item col-md-3">
                 <div class="actions">
                     <a class="pull-right">
                         <span class="delete">X</span>
@@ -89,6 +89,7 @@
                     ` + textFieldTemplate('clientFilename', photo.clientFilename, 'disabled') + `
                     ` + textFieldTemplate('title', photo.title, 'placeholder="Photo title"') + `
                     ` + textAreaTemplate('description', photo.description, 'placeholder="Description"') + `
+                    ` + checkBoxTemplate('published', photo.published, 'Published') + `
                 </form>
             </div>
         `;
@@ -112,6 +113,20 @@
         return `
             <div class="form-group">
                 <textarea class="form-control" name="` + name + `" id="" cols="30" rows="5" ` + attributes + `>` + value + `</textarea>
+            </div>
+        `;
+    }
+
+    function checkBoxTemplate(name, value, label) {
+        value = value || ''
+        label = label || ''
+
+        return `
+            <div class="form-group">
+                <span><strong>` + label + `</strong></span>
+                <input type="checkbox" 
+                       class="checkbox checkbox--green pull-right" 
+                       name="` + name + `" ` + (+value ? `checked` : ``) + `>
             </div>
         `;
     }

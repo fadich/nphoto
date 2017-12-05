@@ -12,9 +12,14 @@
     <title>Document</title>
 </head>
 <body>
-<div class="wrapper">
-    <div class="content">
-        {!! $content !!}
+
+<div id="wrap" class="wrapper">
+    <div id="main" class="container">
+        <div class="wrapper">
+            <div class="content">
+                {!! $content !!}
+            </div>
+        </div>
     </div>
 </div>
 

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Photo
  * @package App\Models
  *
- * @property string $id
+ * @property string|integer $id
  * @property string $title
  * @property string $description
  * @property string $basePath
@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $fullPath
  * @property string $createdAt
  * @property string $updatedAt
+ * @property string|integer $published
  */
 class Photo extends Model
 {
@@ -42,13 +43,14 @@ class Photo extends Model
         }
 
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'fullPath' => $this->fullPath,
+            'id'             => $this->id,
+            'title'          => $this->title,
+            'description'    => $this->description,
+            'fullPath'       => $this->fullPath,
             'clientFilename' => $this->clientFilename,
-            'createdAt' => $this->createdAt,
-            'updatedAt' => $this->updatedAt,
+            'createdAt'      => $this->createdAt,
+            'updatedAt'      => $this->updatedAt,
+            'published'      => $this->published,
         ];
     }
 
