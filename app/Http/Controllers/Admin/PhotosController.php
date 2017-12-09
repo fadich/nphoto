@@ -89,7 +89,7 @@ class PhotosController extends Controller
                     'miniature' => basename($mini->getFullPath()),
                     'base_path' => dirname($originalPath),
                     'client_filename' => $file->getClientOriginalName(),
-                    'original_path' => basename($result),
+                    'original_path' => dirname($result),
                 ]);
             } catch (\Exception $e) {
                 $errors[] = $file->getClientOriginalName();

@@ -110,7 +110,7 @@
 <div class="all-uploads">
     @foreach($images as $image)
         <div class="all-uploads-item shadow-border">
-            <img src="{{ $image->fullPath }}" class="uploaded-image">
+            <img src="{{ $image->miniature }}" class="uploaded-image">
         </div>
     @endforeach
 </div>
