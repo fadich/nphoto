@@ -10,6 +10,7 @@
     let page = 1
     let nextPage = true
     let photos = []
+    let blockRequest = false
 
     $(document).ready(function () {
         getPhotos({
@@ -115,7 +116,7 @@
                 </div>
                 <form action="/admin/photos/` + photo.id + `/update" method="post" class="photo-list-item-form">
                     <div class="photo-list-item-image">
-                        <img src="/` + photo.fullPath + `">
+                        <img src="/` + photo.miniature + `">
                     </div>
                     ` + textFieldTemplate('clientFilename', photo.clientFilename, 'disabled') + `
                     ` + textFieldTemplate('title', photo.title, 'placeholder="Photo title"') + `
@@ -190,10 +191,11 @@
 
         displayPhotos(photos)
             .then(function () {
-                if (!nextPage) {
+                if (!nextPage || blockRequest) {
                     return;
                 }
 
+                blockRequest = true
                 getPhotos({
                     page: page++,
                     perPage: PER_PAGE
@@ -203,6 +205,7 @@
                         if (photos.length < PER_PAGE) {
                             nextPage = false
                         }
+                        blockRequest = false
                     })
             })
             .then(() => {
@@ -211,7 +214,7 @@
                     $list.parent().append(`
                         <div class="load-more-wrap">
                             <button id="load-more" class="btn btn-default">
-                            -- Load more --
+                            Load more
                             </button>
                         </div>
                     `)

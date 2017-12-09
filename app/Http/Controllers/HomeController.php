@@ -22,7 +22,7 @@ class HomeController extends Controller
 
     public function indexAction()
     {
-        $images = $this->photoRepository->get(1, 240, ['published' => 1]);
+        $images = $this->photoRepository->get(1, 50, ['published' => 1]);
 
         return $this->render('index', [
             'images' => $images,
