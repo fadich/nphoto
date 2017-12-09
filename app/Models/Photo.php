@@ -14,9 +14,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $description
  * @property string $basePath
  * @property string $filename
+ * @property string $miniaturePhoto
  * @property string $clientFilename
  * @property string $originalPath
- * @property string $fullPath
+ * @property string $originalPhoto
  * @property string $createdAt
  * @property string $updatedAt
  * @property string|integer $published
@@ -32,6 +33,7 @@ class Photo extends Model
         'description',
         'base_path',
         'filename',
+        'miniature',
         'client_filename',
         'original_path',
         'published',
@@ -47,7 +49,8 @@ class Photo extends Model
             'id'             => $this->id,
             'title'          => $this->title,
             'description'    => $this->description,
-            'fullPath'       => $this->fullPath,
+            'original'       => $this->originalPhoto,
+            'miniature'      => $this->miniaturePhoto,
             'clientFilename' => $this->clientFilename,
             'createdAt'      => $this->createdAt,
             'updatedAt'      => $this->updatedAt,
@@ -55,18 +58,14 @@ class Photo extends Model
         ];
     }
 
-    public function getFullPath()
+    public function getOriginalPhoto()
     {
         return $this->basePath . DIRECTORY_SEPARATOR . $this->filename;
     }
 
-    public function setFullPath(string $path)
+    public function getMiniaturePhoto()
     {
-        $path = explode(DIRECTORY_SEPARATOR, $path);
-        $this->setAttribute('filename', array_pop($path));
-        $this->setAttribute('base_path', implode(DIRECTORY_SEPARATOR, $path));
-
-        return $this;
+        return $this->basePath . DIRECTORY_SEPARATOR . $this->miniature;
     }
 
     public function getCreatedAt()
