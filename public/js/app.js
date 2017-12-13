@@ -44387,7 +44387,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             photos: [],
             tempPhotos: [], // Preparing to render...
             page: 1,
-            perPage: 60,
+            perPage: 30,
             lastPage: false,
             blocked: false
         };
@@ -44399,7 +44399,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.blocked = true;
             this.$http.get('/photos?page=' + this.page + '&per-page=' + this.perPage).then(function (response) {
-                _this.lastPage = !response.body.photos.length % 60;
+                _this.lastPage = !response.body.photos.length % _this.perPage;
 
                 _this.tempPhotos = response.body.photos;
                 _this.blocked = false;
@@ -44457,7 +44457,7 @@ var render = function() {
       { staticClass: "all-uploads" },
       _vm._l(_vm.photos, function(photo) {
         return _c("div", { staticClass: "all-uploads-item shadow-border" }, [
-          _c("a", [
+          _c("a", { attrs: { "data-toggle": "tooltip", title: photo.title } }, [
             _c("img", {
               staticClass: "uploaded-image",
               attrs: { src: "/" + photo.miniature }

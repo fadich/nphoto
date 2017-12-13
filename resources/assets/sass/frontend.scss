@@ -10,6 +10,10 @@
     justify-content: space-around;
     flex-wrap: wrap;
 
+    a {
+      cursor: pointer;
+    }
+
     &-item {
       width: 200px;
       max-height: 140px;

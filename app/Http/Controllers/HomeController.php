@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\Photo\PhotoRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -37,7 +38,12 @@ class HomeController extends Controller
             die;
         }
 
-        // TODO: validation!
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = Validator::make($this->request->all(), [
+            'page' => 'integer|min:1',
+            'per-page' => 'integer|min:3|max:60',
+        ]);
+
         $page = $this->request->get('page', 1);
         $perPage = $this->request->get('per-page', 12);
 

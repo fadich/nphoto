@@ -4,7 +4,7 @@
 
         <div class="all-uploads">
             <div class="all-uploads-item shadow-border" v-for="photo in photos">
-                <a>
+                <a data-toggle="tooltip" :title="photo.title">
                     <img :src="'/' + photo.miniature" class="uploaded-image">
                 </a>
             </div>
@@ -30,7 +30,7 @@
                 photos: [],
                 tempPhotos: [], // Preparing to render...
                 page: 1,
-                perPage: 60,
+                perPage: 30,
                 lastPage: false,
                 blocked: false
             }
@@ -39,7 +39,7 @@
             getPhotos () {
                 this.blocked = true
                 this.$http.get('/photos?page=' + (this.page) + '&per-page=' + this.perPage).then((response) => {
-                    this.lastPage = !response.body.photos.length % 60
+                    this.lastPage = !response.body.photos.length % this.perPage
 
                     this.tempPhotos = response.body.photos
                     this.blocked = false
