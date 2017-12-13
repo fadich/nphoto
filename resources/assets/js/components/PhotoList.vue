@@ -5,7 +5,7 @@
         <div class="all-uploads">
             <div class="all-uploads-item shadow-border" v-for="photo in photos">
                 <a>
-                    <img :src="photo.miniature" class="uploaded-image">
+                    <img :src="'/' + photo.miniature" class="uploaded-image">
                 </a>
             </div>
         </div>
@@ -37,10 +37,6 @@
         },
         methods: {
             getPhotos () {
-                if (this.blocked) {
-                    return
-                }
-
                 this.blocked = true
                 this.$http.get('/photos?page=' + (this.page) + '&per-page=' + this.perPage).then((response) => {
                     this.lastPage = !response.body.photos.length % 60
@@ -54,13 +50,33 @@
                 })
             },
             nextPage () {
+                if (this.blocked || this.lastPage) {
+                    return
+                }
+
+                this.blocked = true
                 this.page++
                 this.photos = this.photos.concat(this.tempPhotos)
                 this.getPhotos()
+            },
+            handleScroll () {
+                if (this.lastPage) {
+                    return
+                }
+
+                if (document.body.offsetHeight - (window.innerHeight + window.scrollY) < 100) {
+                    this.nextPage()
+                }
             }
         },
         mounted() {
             this.getPhotos()
+        },
+        created: function () {
+            window.addEventListener('scroll', this.handleScroll);
+        },
+        destroyed: function () {
+            window.removeEventListener('scroll', this.handleScroll);
         }
     }
 </script>
