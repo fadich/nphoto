@@ -1,3 +1,4 @@
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables";
 
 // Body
 $body-bg: #f5f8fa;
@@ -36,3 +37,9 @@ $input-color-placeholder: lighten($text-color, 30%);
 
 // Panels
 $panel-default-heading-bg: #fff;
+
+
+$for-mobile: (max-width: 480px);
+$for-tablet: (max-width: 768px);
+$for-laptop: (max-width: 1200px);
+$for-desktop: (min-width: 1201px);

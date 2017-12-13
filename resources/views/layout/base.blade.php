@@ -6,6 +6,8 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="stylesheet" href="/css/app.css">
     <link rel="stylesheet" href="/css/frontend.css">
 
@@ -17,7 +19,9 @@
     <div id="main" class="container">
         <div class="wrapper">
             <div class="content">
-                {!! $content !!}
+                <div id="app">
+                    {!! $content !!}
+                </div>
             </div>
         </div>
     </div>

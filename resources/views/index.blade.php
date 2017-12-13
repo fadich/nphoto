@@ -1,3 +1,5 @@
+<!--
+
 <h1 align="center">New uploaded images</h1>
 
 <div class="new-uploaded">
@@ -104,13 +106,6 @@
         </li>
     </div>
 </div>
+-->
 
-<h1 align="center">All uploaded images</h1>
-
-<div class="all-uploads">
-    @foreach($images as $image)
-        <div class="all-uploads-item shadow-border">
-            <img src="{{ $image->miniaturePhoto }}" class="uploaded-image">
-        </div>
-    @endforeach
-</div>
+<photo-list></photo-list>

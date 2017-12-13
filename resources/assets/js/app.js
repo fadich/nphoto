@@ -15,8 +15,11 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
+let Resource = require('vue-resource')
+Vue.component('photo-list', require('./components/PhotoList.vue'))
+
+Vue.use(Resource)
 
 const app = new Vue({
     el: '#app'
-});
+})

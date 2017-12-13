@@ -27,3 +27,9 @@ Route::post("/admin/photos/{id}/update", [
     "as"     => "admin.photos.update",
 //    "before" => "csrf",
 ]);
+
+
+
+
+Route::get("/photos", ["uses" => "HomeController@getPhotosAction", "as" => "photos.list"]);
+
