@@ -4,18 +4,20 @@
 
         <div class="all-uploads">
             <div class="all-uploads-item shadow-border"
-                 v-for="photo in photos"
-                 :class="currentPreview == photo.id ? 'previewed' : ''">
+                 v-for="photo in photos">
 
                 <a data-toggle="tooltip"
-                   :title="photo.title"
+                   :title="getTooltip(photo)"
                    @click="preview(photo)">
-
-                    <img :src="'/' + (currentPreview == photo.id ? photo.original : photo.miniature)"
-                         class="uploaded-image">
+                    <img :src="'/' + photo.miniature" class="uploaded-image">
                 </a>
 
-                <div class="bg-modal" v-if="currentPreview"></div>
+                <a @click="preview(photo)">
+                    <div class="bg-modal"
+                         v-if="currentPreview == photo.id"
+                         :style="'background-image: url(\'/' + photo.original + '\');'">
+                    </div>
+                </a>
             </div>
         </div>
         <div class="load-more-wrap">
@@ -79,12 +81,27 @@
                 }
             },
             preview (photo) {
-                if (photo.id == this.currentPreview) {
-                    this.currentPreview = 0
+                if (photo.id != this.currentPreview) {
+                    this.currentPreview = photo.id
+                    document.body.className += ' no-scroll'
                     return
                 }
 
-                this.currentPreview = photo.id
+                document.body.className = document.body.className.replace(/no-scroll/g, '')
+                this.currentPreview = 0
+            },
+            getTooltip (photo) {
+                let t = '';
+
+                if (photo.title) {
+                    t += photo.title
+                }
+
+                if (t && photo.description) {
+                    return t + '\n\n' + photo.description
+                }
+
+                return photo.description
             }
         },
         mounted() {

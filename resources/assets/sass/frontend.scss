@@ -41,12 +41,28 @@
       &.previewed {
         width: auto;
         max-width: 95vw;
-        max-height: 100vh;
+        max-height: 95vh;
         position: fixed;
         z-index: 10;
         top: 10px;
         margin: 0;
       }
+    }
+    .bg-modal {
+      /* Full height */
+      height: 100%;
+      width: 100%;
+
+      position: fixed;
+      margin: 0;
+      top: 0;
+      left: 0;
+
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      background-color: rgba(0, 0, 0, 0.7);
     }
   }
 
@@ -181,4 +197,8 @@
   position: absolute;
   bottom: 20px;
   right: 20px;
+}
+
+.no-scroll {
+  overflow: hidden !important;
 }

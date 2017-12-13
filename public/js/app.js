@@ -44388,6 +44388,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -44439,12 +44441,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         preview: function preview(photo) {
-            if (photo.id == this.currentPreview) {
-                this.currentPreview = 0;
+            if (photo.id != this.currentPreview) {
+                this.currentPreview = photo.id;
+                document.body.className += ' no-scroll';
                 return;
             }
 
-            this.currentPreview = photo.id;
+            document.body.className = document.body.className.replace(/no-scroll/g, '');
+            this.currentPreview = 0;
+        },
+        getTooltip: function getTooltip(photo) {
+            var t = '';
+
+            if (photo.title) {
+                t += photo.title;
+            }
+
+            if (t && photo.description) {
+                return t + '\n\n' + photo.description;
+            }
+
+            return photo.description;
         }
     },
     mounted: function mounted() {
@@ -44474,42 +44491,44 @@ var render = function() {
       "div",
       { staticClass: "all-uploads" },
       _vm._l(_vm.photos, function(photo) {
-        return _c(
-          "div",
-          {
-            staticClass: "all-uploads-item shadow-border",
-            class: _vm.currentPreview == photo.id ? "previewed" : ""
-          },
-          [
-            _c(
-              "a",
-              {
-                attrs: { "data-toggle": "tooltip", title: photo.title },
-                on: {
-                  click: function($event) {
-                    _vm.preview(photo)
-                  }
+        return _c("div", { staticClass: "all-uploads-item shadow-border" }, [
+          _c(
+            "a",
+            {
+              attrs: { "data-toggle": "tooltip", title: _vm.getTooltip(photo) },
+              on: {
+                click: function($event) {
+                  _vm.preview(photo)
                 }
-              },
-              [
-                _c("img", {
-                  staticClass: "uploaded-image",
-                  attrs: {
-                    src:
-                      "/" +
-                      (_vm.currentPreview == photo.id
-                        ? photo.original
-                        : photo.miniature)
-                  }
-                })
-              ]
-            ),
-            _vm._v(" "),
-            _vm.currentPreview
-              ? _c("div", { staticClass: "bg-modal" })
-              : _vm._e()
-          ]
-        )
+              }
+            },
+            [
+              _c("img", {
+                staticClass: "uploaded-image",
+                attrs: { src: "/" + photo.miniature }
+              })
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "a",
+            {
+              on: {
+                click: function($event) {
+                  _vm.preview(photo)
+                }
+              }
+            },
+            [
+              _vm.currentPreview == photo.id
+                ? _c("div", {
+                    staticClass: "bg-modal",
+                    style: "background-image: url('/" + photo.original + "');"
+                  })
+                : _vm._e()
+            ]
+          )
+        ])
       })
     ),
     _vm._v(" "),
