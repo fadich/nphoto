@@ -44379,6 +44379,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -44389,7 +44398,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             page: 1,
             perPage: 30,
             lastPage: false,
-            blocked: false
+            blocked: false,
+            currentPreview: 0
         };
     },
 
@@ -44427,6 +44437,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (document.body.offsetHeight - (window.innerHeight + window.scrollY) < 100) {
                 this.nextPage();
             }
+        },
+        preview: function preview(photo) {
+            if (photo.id == this.currentPreview) {
+                this.currentPreview = 0;
+                return;
+            }
+
+            this.currentPreview = photo.id;
         }
     },
     mounted: function mounted() {
@@ -44456,14 +44474,42 @@ var render = function() {
       "div",
       { staticClass: "all-uploads" },
       _vm._l(_vm.photos, function(photo) {
-        return _c("div", { staticClass: "all-uploads-item shadow-border" }, [
-          _c("a", { attrs: { "data-toggle": "tooltip", title: photo.title } }, [
-            _c("img", {
-              staticClass: "uploaded-image",
-              attrs: { src: "/" + photo.miniature }
-            })
-          ])
-        ])
+        return _c(
+          "div",
+          {
+            staticClass: "all-uploads-item shadow-border",
+            class: _vm.currentPreview == photo.id ? "previewed" : ""
+          },
+          [
+            _c(
+              "a",
+              {
+                attrs: { "data-toggle": "tooltip", title: photo.title },
+                on: {
+                  click: function($event) {
+                    _vm.preview(photo)
+                  }
+                }
+              },
+              [
+                _c("img", {
+                  staticClass: "uploaded-image",
+                  attrs: {
+                    src:
+                      "/" +
+                      (_vm.currentPreview == photo.id
+                        ? photo.original
+                        : photo.miniature)
+                  }
+                })
+              ]
+            ),
+            _vm._v(" "),
+            _vm.currentPreview
+              ? _c("div", { staticClass: "bg-modal" })
+              : _vm._e()
+          ]
+        )
       })
     ),
     _vm._v(" "),

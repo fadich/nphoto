@@ -3,10 +3,19 @@
         <h1 align="center">All photos</h1>
 
         <div class="all-uploads">
-            <div class="all-uploads-item shadow-border" v-for="photo in photos">
-                <a data-toggle="tooltip" :title="photo.title">
-                    <img :src="'/' + photo.miniature" class="uploaded-image">
+            <div class="all-uploads-item shadow-border"
+                 v-for="photo in photos"
+                 :class="currentPreview == photo.id ? 'previewed' : ''">
+
+                <a data-toggle="tooltip"
+                   :title="photo.title"
+                   @click="preview(photo)">
+
+                    <img :src="'/' + (currentPreview == photo.id ? photo.original : photo.miniature)"
+                         class="uploaded-image">
                 </a>
+
+                <div class="bg-modal" v-if="currentPreview"></div>
             </div>
         </div>
         <div class="load-more-wrap">
@@ -32,7 +41,8 @@
                 page: 1,
                 perPage: 30,
                 lastPage: false,
-                blocked: false
+                blocked: false,
+                currentPreview: 0
             }
         },
         methods: {
@@ -67,6 +77,14 @@
                 if (document.body.offsetHeight - (window.innerHeight + window.scrollY) < 100) {
                     this.nextPage()
                 }
+            },
+            preview (photo) {
+                if (photo.id == this.currentPreview) {
+                    this.currentPreview = 0
+                    return
+                }
+
+                this.currentPreview = photo.id
             }
         },
         mounted() {
