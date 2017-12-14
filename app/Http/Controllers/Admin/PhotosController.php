@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Repositories\Photo\PhotoRepository;
-use App\Services\FileAdapter;
 use Illuminate\Http\Request;
+use App\Services\FileSystem\Image;
 use App\Http\Controllers\Controller;
+use App\Services\FileSystem\FileUploader;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\Photo\PhotoRepository;
 
 class PhotosController extends Controller
 {
@@ -18,18 +20,18 @@ class PhotosController extends Controller
     protected $photoRepository;
 
     /**
-     * @var \App\Services\FileAdapter
+     * @var \App\Services\FileSystem\FileUploader
      */
-    protected $fileAdapter;
+    protected $fileUploader;
 
     public function __construct(
         Request $request,
-        FileAdapter $fileAdapter,
+        FileUploader $fileUploader,
         PhotoRepository $photoRepository
     ) {
         parent::__construct($request);
 
-        $this->fileAdapter = $fileAdapter;
+        $this->fileUploader = $fileUploader;
         $this->photoRepository = $photoRepository;
     }
 
@@ -55,14 +57,14 @@ class PhotosController extends Controller
         /** @var \Illuminate\Validation\Validator $validator */
         $validator = Validator::make($this->request->all(), [
             'photos' => 'required|array',
-            'photos.*' => 'required|image',
+            'photos.*' => 'required|image|max:33554432',
         ]);
 
         $validator->validate();
 
         /** @var \Symfony\Component\HttpFoundation\File\UploadedFile[] $files */
         $files = $this->request->files->get('photos') ?: [];
-        $results = $this->fileAdapter->uploadMulti($files, static::UPDATED_PHOTOS_DIR);
+        $results = $this->fileUploader->uploadMulti($files, static::UPDATED_PHOTOS_DIR);
         $success = 0;
         $errors = [];
 
@@ -73,18 +75,25 @@ class PhotosController extends Controller
                 $errors[] = $file->getClientOriginalName();
                 continue;
             }
+
+            $mini = new Image(Storage::path($result));
+            $mini->saveAs($mini->getDirName(), $mini->getFileName() . '_min');
+            $mini->resize(340);
+
             // Replace for frontend...
-            $path = str_replace('public', 'storage', $result);
+            $originalPath = str_replace('public', 'storage', $result);
 
             try {
                 $photo = $this->photoRepository->create([
-                    'full_path' => $path,
+                    'filename' => basename($originalPath),
+                    'miniature' => basename($mini->getFullPath()),
+                    'base_path' => dirname($originalPath),
                     'client_filename' => $file->getClientOriginalName(),
-                    'original_path' => $result,
+                    'original_path' => dirname($result),
                 ]);
             } catch (\Exception $e) {
                 $errors[] = $file->getClientOriginalName();
-                $this->fileAdapter->delete($result);
+                $this->fileUploader->delete($result);
                 if (app('env') === 'local') {
                     throw $e;
                 }
