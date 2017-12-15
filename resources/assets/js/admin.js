@@ -63,6 +63,11 @@
                     }
                 },
                 error: function (error) {
+                    let loadItems = $list.find('.photo-list-item.loading')
+                    if (loadItems.length) {
+                        loadItems[0].remove()
+                    }
+
                     console.error(error.status + ': ' + error.statusText)
                     alert(error.status + ': ' + error.statusText)
                 }
