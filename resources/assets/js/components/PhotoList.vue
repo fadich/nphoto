@@ -23,7 +23,7 @@
         <div class="load-more-wrap">
             <button id="load-more"
                     class="btn btn-success"
-                    v-if="!lastPage"
+                    v-if="!lastPage && photos.length >= perPage"
                     @click="nextPage"
                     v-on:show="nextPage">
                 More
