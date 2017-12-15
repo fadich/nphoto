@@ -40,6 +40,7 @@
 
         for (let file of files) {
             formData.set('photos[]', file)
+            $list.prepend(loadingItemTemplate(Date.now()))
 
             $.ajax({
                 type: 'POST',
@@ -51,12 +52,19 @@
                 success: function (res) {
                     for (let photo of res.photos) {
                         if (photo) {
+                            let loadItems = $list.find('.photo-list-item.loading')
+
                             $list.prepend(photoItemTemplate(photo))
+
+                            if (loadItems.length) {
+                                loadItems[0].remove()
+                            }
                         }
                     }
                 },
                 error: function (error) {
                     console.error(error.status + ': ' + error.statusText)
+                    alert(error.status + ': ' + error.statusText)
                 }
             })
         }
@@ -74,6 +82,51 @@
         $(this).submit()
     })
 
+    $(document).on('click', '.delete', function () {
+        let $this = $(this);
+        let $item = $this.closest('.photo-list-item');
+        let id = $item.data('id')
+
+        if (!confirm("Delete this photo?")) {
+            return
+        }
+
+        if (id) {
+            // $.ajax({
+            //     url: '/admin/photos/' + id + '/delete',
+            //     method: 'post',
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //     },
+            //     success: function (res) {
+            //         console.log(res)
+            //         $item.remove()
+            //     },
+            //     error: function (err) {
+            //         console.error(err)
+            //         alert(err.status + ': ' + err.statusText)
+            //     }
+            // })
+
+            $.ajax({
+                url: '/admin/photos/' + id + '/update',
+                data: {status: 0},
+                method: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (res) {
+                    console.log(res)
+                    $item.remove()
+                },
+                error: function (err) {
+                    console.error(err)
+                    alert(err.status + ': ' + err.statusText)
+                }
+            })
+        }
+    })
+
     $(document).on('submit', '.photo-list-item-form', function (ev) {
         let $this = $(this)
         let data = {}
@@ -82,7 +135,8 @@
         })
         let url = $this.attr('action')
 
-        data.published = +!!data.published
+        data.status = data.published ? 10 : 5
+        delete data.published
         ev.preventDefault()
 
         $.ajax({
@@ -97,6 +151,7 @@
             },
             error: function (err) {
                 console.error(err)
+                alert(err.status + ': ' + err.statusText)
             }
         })
     })
@@ -108,7 +163,7 @@
 
     function photoItemTemplate(photo) {
         return `
-            <div class="photo-list-item col-md-3">
+            <div class="photo-list-item col-md-3" data-id="` + photo.id + `">
                 <div class="actions">
                     <a class="pull-right">
                         <span class="delete">X</span>
@@ -121,8 +176,16 @@
                     ` + textFieldTemplate('clientFilename', photo.clientFilename, 'disabled') + `
                     ` + textFieldTemplate('title', photo.title, 'placeholder="Photo title"') + `
                     ` + textAreaTemplate('description', photo.description, 'placeholder="Description"') + `
-                    ` + checkBoxTemplate('published', photo.published, 'Published') + `
+                    ` + checkBoxTemplate('published', photo.status == 10, 'Published') + `
                 </form>
+            </div>
+        `;
+    }
+
+    function loadingItemTemplate() {
+        return `
+            <div class="photo-list-item loading col-md-3">
+                <p align="center">Loading...</p>
             </div>
         `;
     }
