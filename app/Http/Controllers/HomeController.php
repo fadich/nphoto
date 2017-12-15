@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Photo\PhotoRepository;
-use Illuminate\Http\JsonResponse;
+use App\Models\Photo;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\Photo\PhotoRepository;
 
 class HomeController extends Controller
 {
@@ -24,7 +25,7 @@ class HomeController extends Controller
 
     public function indexAction()
     {
-        $images = $this->photoRepository->get(1, 50, ['published' => 1]);
+        $images = $this->photoRepository->get(1, 50, ['status' => Photo::STATUS_PUBLISHED]);
 
         return $this->render('index', [
             'images' => $images,
@@ -47,7 +48,7 @@ class HomeController extends Controller
         $page = $this->request->get('page', 1);
         $perPage = $this->request->get('per-page', 12);
 
-        $photos = $this->photoRepository->get($page, $perPage, ['published' => 1]);
+        $photos = $this->photoRepository->get($page, $perPage, ['status' => Photo::STATUS_PUBLISHED]);
 
         return $this->json([
             'photos' => $photos,

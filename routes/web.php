@@ -27,9 +27,14 @@ Route::post("/admin/photos/{id}/update", [
     "as"     => "admin.photos.update",
 //    "before" => "csrf",
 ]);
+Route::post("/admin/photos/{id}/delete", [
+    "uses"   => "Admin\PhotosController@deleteAction",
+    "as"     => "admin.photos.delete",
+//    "before" => "csrf",
+]);
 
 
-
+// API
 
 Route::get("/photos", ["uses" => "HomeController@getPhotosAction", "as" => "photos.list"]);
 
