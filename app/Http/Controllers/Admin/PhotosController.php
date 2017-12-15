@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use App\Services\FileSystem\Image;
 use App\Http\Controllers\Controller;
@@ -47,8 +48,17 @@ class PhotosController extends Controller
         $page = $this->request->get('page') ?: 1;
         $perPage = $this->request->get('perPage') ?: 12;
 
+        $offset = ($page - 1) * $perPage;
+
+        $photos = (new Photo())
+            ->where('status', '>', Photo::STATUS_DELETED)
+            ->orderBy('id', 'DESC')
+            ->limit($perPage)
+            ->offset($offset)
+            ->get();
+
         return $this->json([
-            'photos' => $this->photoRepository->get($page, $perPage)
+            'photos' => $photos,
         ]);
     }
 
@@ -76,9 +86,21 @@ class PhotosController extends Controller
                 continue;
             }
 
+            $large = new Image(Storage::path($result));
+            $large->saveAs($large->getDirName(), $large->getFileName() . '_lg');
+            $large->resize(1024, true);
+
+            $medium = new Image(Storage::path($result));
+            $medium->saveAs($medium->getDirName(), $medium->getFileName() . '_md');
+            $medium->resize(640, true);
+
+            $small = new Image(Storage::path($result));
+            $small->saveAs($small->getDirName(), $small->getFileName() . '_sm');
+            $small->resize(400, true);
+
             $mini = new Image(Storage::path($result));
-            $mini->saveAs($mini->getDirName(), $mini->getFileName() . '_min');
-            $mini->resize(340);
+            $mini->saveAs($mini->getDirName(), $mini->getFileName() . '_mn');
+            $mini->resize(160, true);
 
             // Replace for frontend...
             $originalPath = str_replace('public', 'storage', $result);
@@ -86,6 +108,9 @@ class PhotosController extends Controller
             try {
                 $photo = $this->photoRepository->create([
                     'filename' => basename($originalPath),
+                    'large' => basename($large->getFullPath()),
+                    'medium' => basename($medium->getFullPath()),
+                    'small' => basename($small->getFullPath()),
                     'miniature' => basename($mini->getFullPath()),
                     'base_path' => dirname($originalPath),
                     'client_filename' => $file->getClientOriginalName(),
@@ -139,7 +164,7 @@ class PhotosController extends Controller
         $validator = Validator::make($this->request->all(), [
             'title' => 'string|nullable',
             'description' => 'string|nullable',
-            'published' => 'integer|min:0|max:1|nullable',
+            'status' => 'integer|min:0|max:10|nullable',
         ]);
         $validator->validate();
 
@@ -155,7 +180,31 @@ class PhotosController extends Controller
         return $this->json([
             'success' => true,
             'photos' => $photo->toArray(),
-            'message' => 'Photos has been saved successfully',
+            'message' => 'Photo has been saved successfully',
+        ]);
+    }
+
+    public function deleteAction(int $id)
+    {
+        $photo = $this->photoRepository->findOne((int) $id);
+
+        if (!$photo) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Photos not found',
+            ], 404);
+        }
+
+        $res = (bool)$photo->delete();
+
+        $message = 'Cannot delete photo';
+        if ($res) {
+            $message = 'Photo has been saved successfully';
+        }
+
+        return $this->json([
+            'success' => $res,
+            'message' => $message,
         ]);
     }
 

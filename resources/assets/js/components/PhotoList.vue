@@ -15,7 +15,7 @@
                 <a @click="preview(photo)">
                     <div class="bg-modal"
                          v-if="currentPreview == photo.id"
-                         :style="'background-image: url(\'/' + photo.original + '\');'">
+                         :style="'background-image: url(\'/' + (getDisplay(photo)) + '\');'">
                     </div>
                 </a>
             </div>
@@ -23,7 +23,7 @@
         <div class="load-more-wrap">
             <button id="load-more"
                     class="btn btn-success"
-                    v-if="!lastPage"
+                    v-if="!lastPage && photos.length >= perPage"
                     @click="nextPage"
                     v-on:show="nextPage">
                 More
@@ -102,6 +102,9 @@
                 }
 
                 return photo.description
+            },
+            getDisplay (photo) {
+                return document.body.offsetWidth > 1024 ? photo.large : photo.medium
             }
         },
         mounted() {

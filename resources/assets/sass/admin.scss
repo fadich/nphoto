@@ -3,8 +3,19 @@
 .photo-list {
   &-item {
     .actions {
-      .delete {
-        padding: 5px 20px;
+      a {
+        user-select: none;
+        cursor: pointer;
+        &:hover {
+          text-decoration: none;
+        }
+        &:focus {
+          text-decoration: none;
+        }
+
+        .delete {
+          padding: 5px 20px;
+        }
       }
     }
 
