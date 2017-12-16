@@ -9,7 +9,7 @@
                 <a data-toggle="tooltip"
                    :title="getTooltip(photo)"
                    @click="preview(photo)">
-                    <img :src="'/' + photo.miniature" class="uploaded-image">
+                    <img :src="'/' + photo.small" class="uploaded-image">
                 </a>
 
                 <a @click="preview(photo)">
