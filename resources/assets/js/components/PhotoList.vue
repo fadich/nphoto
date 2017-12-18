@@ -4,20 +4,34 @@
 
         <div class="all-uploads">
             <div class="all-uploads-item shadow-border"
-                 v-for="photo in photos">
+                 v-for="(photo, index) in photos">
 
-                <a data-toggle="tooltip"
+                <a href="#"
+                   data-toggle="tooltip"
                    :title="getTooltip(photo)"
-                   @click="preview(photo)">
+                   @click="preview(index)">
                     <img :src="'/' + photo.small" class="uploaded-image">
                 </a>
 
-                <a @click="preview(photo)">
-                    <div class="bg-modal"
-                         v-if="currentPreview == photo.id"
-                         :style="'background-image: url(\'/' + (getDisplay(photo)) + '\');'">
+
+                <div class="preview-modal"
+                     v-if="currentPreview == index">
+                    <div class="preview-modal-background"></div>
+                    <div class="preview-modal-close">
+                        <a href="#" @click="closePreview">
+                            <span class="glyphicon glyphicon-remove-circle"></span>
+                        </a>
                     </div>
-                </a>
+                    <a href="#" class="preview-photo"
+                       v-touch:tap="nextPhoto"
+                       v-touch:swipe.left="nextPhoto"
+                       v-touch:swipe.right="previousPhoto"
+                       v-touch:swipe.top="closePreview"
+                       v-touch:swipe.bottom="closePreview">
+                        <div :style="'background-image: url(\'/' + (getDisplay(index)) + '\');'">
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
         <div class="load-more-wrap">
@@ -44,7 +58,7 @@
                 perPage: 30,
                 lastPage: false,
                 blocked: false,
-                currentPreview: 0
+                currentPreview: -1
             }
         },
         methods: {
@@ -80,15 +94,17 @@
                     this.nextPage()
                 }
             },
-            preview (photo) {
-                if (photo.id != this.currentPreview) {
-                    this.currentPreview = photo.id
+            preview (index) {
+                console.log(2)
+                if (index != this.currentPreview) {
+                    this.currentPreview = index
                     document.body.className += ' no-scroll'
                     return
                 }
-
+            },
+            closePreview () {
                 document.body.className = document.body.className.replace(/no-scroll/g, '')
-                this.currentPreview = 0
+                this.currentPreview = -1
             },
             getTooltip (photo) {
                 let t = '';
@@ -103,8 +119,40 @@
 
                 return photo.description
             },
-            getDisplay (photo) {
-                return document.body.offsetWidth > 1024 ? photo.large : photo.medium
+            getDisplay (index) {
+                let photo = this.photos[index]
+
+                if (!photo) {
+                    return ''
+                }
+
+                return (document.body.offsetWidth > 1024) ? photo.large : photo.medium
+            },
+            nextPhoto () {
+                if (this.currentPreview == this.photos.length - 1) {
+                    this.currentPreview = 0;
+                    return
+                }
+
+                let photo = this.photos[this.currentPreview + 1]
+
+                if (photo) {
+                    this.currentPreview++
+                }
+                if (
+                    this.photos.length - this.currentPreview <= 5 &&
+                    !this.lastPage
+                ) {
+                    this.nextPage()
+                }
+            },
+            previousPhoto () {
+                if (this.currentPreview - 1 < 0) {
+                    this.currentPreview = this.photos.length - 1;
+                    return
+                }
+
+                this.currentPreview--
             }
         },
         mounted() {

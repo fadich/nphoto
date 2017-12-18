@@ -16,9 +16,11 @@ window.Vue = require('vue');
  */
 
 let Resource = require('vue-resource')
-Vue.component('photo-list', require('./components/PhotoList.vue'))
+let Vue2TouchEvents = require('vue2-touch-events')
 
+Vue.component('photo-list', require('./components/PhotoList.vue'))
 Vue.use(Resource)
+Vue.use(Vue2TouchEvents)
 
 const app = new Vue({
     el: '#app'
