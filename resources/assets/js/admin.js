@@ -176,7 +176,7 @@
                 </div>
                 <form action="/admin/photos/` + photo.id + `/update" method="post" class="photo-list-item-form">
                     <div class="photo-list-item-image">
-                        <img src="/` + photo.miniature + `">
+                        <img src="/` + photo.small + `">
                     </div>
                     ` + textFieldTemplate('clientFilename', photo.clientFilename, 'disabled') + `
                     ` + textFieldTemplate('title', photo.title, 'placeholder="Photo title"') + `

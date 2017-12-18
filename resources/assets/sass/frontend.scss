@@ -48,7 +48,7 @@
         margin: 0;
       }
     }
-    .bg-modal {
+    .preview-modal {
       /* Full height */
       height: 100%;
       width: 100%;
@@ -58,11 +58,48 @@
       top: 0;
       left: 0;
 
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: contain;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 10;
+
+      &-background {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        margin: 0;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        -webkit-filter: blur(5px);
+        -moz-filter: blur(5px);
+        -o-filter: blur(5px);
+        -ms-filter: blur(5px);
+        filter: blur(5px);
+      }
+
+      &-close {
+        position: fixed;
+        top: 2.5vh;
+        right: 2.5vw;
+        z-index: 11;
+        font-size: 24px;
+
+      }
+
+      .preview-photo {
+        z-index: 10;
+
+        div {
+          width: 90vw;
+          height: 90vh;
+
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: contain;
+        }
+      }
     }
   }
 
