@@ -23,7 +23,7 @@
                         </a>
                     </div>
                     <a href="#" class="preview-photo"
-                       v-touch:tap="nextPhoto"
+                       @click="nextPhoto"
                        v-touch:swipe.left="nextPhoto"
                        v-touch:swipe.right="previousPhoto"
                        v-touch:swipe.top="closePreview"
