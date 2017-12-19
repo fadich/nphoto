@@ -3,13 +3,13 @@
         <h1 align="center">All photos</h1>
 
         <div class="all-uploads">
-            <div class="all-uploads-item shadow-border"
-                 v-for="(photo, index) in photos">
+            <div v-for="(photo, index) in photos"
+                 :id="'list-item-' + index"
+                 class="all-uploads-item shadow-border">
 
-                <a href="#"
-                   data-toggle="tooltip"
+                <a data-toggle="tooltip"
                    :title="getTooltip(photo)"
-                   @click="preview(index)">
+                   @click="preview(index, $event)">
                     <img :src="'/' + photo.small" class="uploaded-image">
                 </a>
 
@@ -18,11 +18,11 @@
                      v-if="currentPreview == index">
                     <div class="preview-modal-background"></div>
                     <div class="preview-modal-close">
-                        <a href="#" @click="closePreview">
+                        <a @click="closePreview">
                             <span class="glyphicon glyphicon-remove-circle"></span>
                         </a>
                     </div>
-                    <a href="#" class="preview-photo"
+                    <a class="preview-photo"
                        @click="nextPhoto"
                        v-touch:swipe.left="nextPhoto"
                        v-touch:swipe.right="previousPhoto">
@@ -92,15 +92,22 @@
                     this.nextPage()
                 }
             },
-            preview (index) {
-                console.log(2)
+            preview (index, event) {
+                if (event && event.hasOwnProperty('preventDefault')) {
+                    event.preventDefault()
+                }
+
                 if (index != this.currentPreview) {
                     this.currentPreview = index
                     document.body.className += ' no-scroll'
                     return
                 }
             },
-            closePreview () {
+            closePreview (event) {
+                if (event && event.hasOwnProperty('preventDefault')) {
+                    event.preventDefault()
+                }
+
                 document.body.className = document.body.className.replace(/no-scroll/g, '')
                 this.currentPreview = -1
             },
@@ -126,9 +133,15 @@
 
                 return (document.body.offsetWidth > 1024) ? photo.large : photo.medium
             },
-            nextPhoto () {
+            nextPhoto (event) {
+                if (event && event.hasOwnProperty('preventDefault')) {
+                    event.preventDefault()
+                }
+
                 if (this.currentPreview == this.photos.length - 1) {
                     this.currentPreview = 0;
+                    document.getElementById('list-item-' + this.currentPreview)
+                        .scrollIntoView({block: 'start', behavior: 'smooth'})
                     return
                 }
 
@@ -137,6 +150,8 @@
                 if (photo) {
                     this.currentPreview++
                 }
+                document.getElementById('list-item-' + this.currentPreview)
+                    .scrollIntoView({block: 'start', behavior: 'smooth'})
                 if (
                     this.photos.length - this.currentPreview <= 5 &&
                     !this.lastPage
@@ -147,10 +162,15 @@
             previousPhoto () {
                 if (this.currentPreview - 1 < 0) {
                     this.currentPreview = this.photos.length - 1;
+                    document.getElementById('list-item-' + this.currentPreview)
+                        .scrollIntoView({block: 'start', behavior: 'smooth'})
                     return
                 }
 
                 this.currentPreview--
+
+                document.getElementById('list-item-' + this.currentPreview)
+                    .scrollIntoView({block: 'start', behavior: 'smooth'})
             }
         },
         mounted() {
