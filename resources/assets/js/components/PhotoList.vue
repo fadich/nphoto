@@ -109,6 +109,10 @@
                 }
 
                 document.body.className = document.body.className.replace(/no-scroll/g, '')
+
+                document.getElementById('list-item-' + this.currentPreview)
+                    .scrollIntoView({block: 'start', behavior: 'smooth'})
+
                 this.currentPreview = -1
             },
             getTooltip (photo) {
@@ -140,8 +144,6 @@
 
                 if (this.currentPreview == this.photos.length - 1) {
                     this.currentPreview = 0;
-                    document.getElementById('list-item-' + this.currentPreview)
-                        .scrollIntoView({block: 'start', behavior: 'smooth'})
                     return
                 }
 
@@ -150,8 +152,6 @@
                 if (photo) {
                     this.currentPreview++
                 }
-                document.getElementById('list-item-' + this.currentPreview)
-                    .scrollIntoView({block: 'start', behavior: 'smooth'})
                 if (
                     this.photos.length - this.currentPreview <= 5 &&
                     !this.lastPage
@@ -162,15 +162,10 @@
             previousPhoto () {
                 if (this.currentPreview - 1 < 0) {
                     this.currentPreview = this.photos.length - 1;
-                    document.getElementById('list-item-' + this.currentPreview)
-                        .scrollIntoView({block: 'start', behavior: 'smooth'})
                     return
                 }
 
                 this.currentPreview--
-
-                document.getElementById('list-item-' + this.currentPreview)
-                    .scrollIntoView({block: 'start', behavior: 'smooth'})
             }
         },
         mounted() {
