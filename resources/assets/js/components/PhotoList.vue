@@ -25,9 +25,7 @@
                     <a href="#" class="preview-photo"
                        @click="nextPhoto"
                        v-touch:swipe.left="nextPhoto"
-                       v-touch:swipe.right="previousPhoto"
-                       v-touch:swipe.top="closePreview"
-                       v-touch:swipe.bottom="closePreview">
+                       v-touch:swipe.right="previousPhoto">
                         <div :style="'background-image: url(\'/' + (getDisplay(index)) + '\');'">
                         </div>
                     </a>
