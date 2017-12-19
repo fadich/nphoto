@@ -19,7 +19,7 @@
                     <div class="preview-modal-background"></div>
                     <div class="preview-modal-close">
                         <a @click="closePreview">
-                            <span class="glyphicon glyphicon-remove-circle"></span>
+                            <span class="glyphicon glyphicon-remove"></span>
                         </a>
                     </div>
                     <a class="preview-photo"
